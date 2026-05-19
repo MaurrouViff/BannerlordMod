@@ -1,17 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-screen scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="module" src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+    <link rel="icon" href="{{ asset('logo/favicon.png') }}">
     {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
     {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
-
     {% endblock %}
 
     {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
@@ -22,7 +23,7 @@
     {% endif %}
     <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
+<body class="bg-neutral-950 flex flex-col h-screen text-white antialiased selection:bg-amber-400/20 selection:text-amber-100">
     {% block body %}{% endblock %}
 </body>
 </html>

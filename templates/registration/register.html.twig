@@ -1,0 +1,197 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% form_theme registrationForm _self %}
+
+{% block form_row %}
+    <div class="space-y-1.5">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{% block form_label %}
+    {% if label is not same as(false) %}
+        <label for="{{ id }}" class="block text-xs font-semibold uppercase tracking-[0.2em] text-amber-400/80">
+            {{ label|trans({}, translation_domain) }}
+        </label>
+    {% endif %}
+{% endblock %}
+
+{# Le widget générique corrigé pour conserver le type HTML d'origine (text, email, password...) #}
+{% block form_widget_simple %}
+    {# On récupère le type défini par le FormType de Symfony (ex: 'password' ou 'email') #}
+    {% set type = type|default('text') %}
+
+    {# Classes CSS style "Donjon & Fer forgé" #}
+    {% set medieval_input_classes = 'w-full bg-neutral-900/90 border border-amber-800/40 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none text-amber-100 placeholder-neutral-600 px-4 py-3 rounded-xs shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] focus:shadow-[0_0_12px_rgba(245,158,11,0.1),inset_0_2px_4px_rgba(0,0,0,0.6)] transition-all duration-200' %}
+
+    {% set attr = attr|merge({
+        class: (attr.class|default('') ~ ' ' ~ medieval_input_classes)|trim
+    }) %}
+
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{# Redirection des types spéciaux vers le widget en leur transmettant explicitement leur type #}
+{% block email_widget %}
+    {% set type = 'email' %}
+    {{ block('form_widget_simple') }}
+{% endblock %}
+
+{# C'est ici qu'on force l'input à rester un mot de passe masqué ! #}
+{% block password_widget %}
+    {% set type = 'password' %}
+    {{ block('form_widget_simple') }}
+{% endblock %}
+
+{# Le checkbox ultra-stylisé et corrigé #}
+{% block checkbox_widget %}
+    {% set attr = attr|merge({
+        class: (attr.class|default('') ~ ' peer sr-only')|trim
+    }) %}
+    <label for="{{ id }}" class="flex items-start gap-4 cursor-pointer group my-2 select-none">
+        <input type="checkbox" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} {% if checked %}checked="checked"{% endif %} />
+
+        <span class="mt-0.5 flex shrink-0 items-center justify-center w-5 h-5
+                     border border-amber-700/60 bg-neutral-900 rounded-sm
+                     shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)]
+                     group-hover:border-amber-500/80 group-hover:shadow-[0_0_8px_rgba(245,158,11,0.2),inset_0_2px_4px_rgba(0,0,0,0.8)]
+                     peer-checked:bg-linear-to-b peer-checked:from-amber-950 peer-checked:to-neutral-900
+                     peer-checked:border-amber-400 peer-checked:shadow-[0_0_10px_rgba(245,158,11,0.3)]
+                     peer-focus:ring-2 peer-focus:ring-amber-500/40 transition-all duration-300 group/box">
+
+            <iconify-icon icon="game-icons:check-mark"
+                          class="text-amber-400 text-xs scale-0 opacity-0
+                                 peer-checked:group-hover/box:scale-110
+                                 [.peer:checked+span_&]:scale-110 [.peer:checked+span_&]:opacity-100
+                                 drop-shadow-[0_0_3px_rgba(245,158,11,0.6)]
+                                 transition-all duration-200">
+            </iconify-icon>
+        </span>
+
+        <span class="text-sm text-neutral-400 group-hover:text-amber-100/90 peer-checked:text-amber-200 transition-colors duration-200 leading-snug">
+            J'accepte le <span class="text-amber-400/90 font-medium group-hover:text-amber-400">code d'honneur</span> et les <span class="text-amber-400/90 font-medium group-hover:text-amber-400">serments</span> du royaume.
+        </span>
+    </label>
+{% endblock %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <ul class="mt-1 space-y-1">
+            {% for error in errors %}
+                <li class="flex items-center gap-1.5 text-xs text-red-400">
+                    <iconify-icon icon="game-icons:broken-shield" class="text-sm"></iconify-icon>
+                    <span>{{ error.message }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{# =============================================================================
+   CORPS DE LA PAGE (Le Visuel global)
+   ============================================================================= #}
+
+{% block body %}
+    <main class="flex-1 flex items-center justify-center px-4 py-12 relative overflow-hidden">
+
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-600/5 rounded-full blur-3xl"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]"></div>
+        </div>
+
+        <div class="relative w-full max-w-md">
+
+            <div class="absolute -inset-0.5 bg-linear-to-br from-amber-500 via-yellow-700 to-amber-900 rounded-lg blur-sm opacity-60"></div>
+
+            <div class="relative bg-neutral-950 border-2 border-amber-600/60 rounded-lg shadow-2xl shadow-amber-900/40">
+
+                <div class="relative border-b border-amber-700/40 bg-linear-to-b from-amber-950/40 to-transparent px-8 pt-8 pb-6">
+                    <div class="flex justify-center mb-3">
+                        <iconify-icon icon="game-icons:crossed-swords" class="text-5xl text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"></iconify-icon>
+                    </div>
+                    <h1 class="text-center text-3xl font-serif font-bold tracking-wider text-amber-400 uppercase">
+                        Rejoindre la Bannière
+                    </h1>
+                    <p class="text-center text-xs text-amber-200/60 mt-2 tracking-[0.3em] uppercase">
+                        — Forgez votre légende —
+                    </p>
+
+                    <div class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-px bg-linear-to-r from-transparent to-amber-600/60"></div>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-px bg-linear-to-l from-transparent to-amber-600/60"></div>
+                </div>
+
+                <div class="p-8">
+                    {% if registrationForm.vars.errors|length > 0 %}
+                        <div class="mb-6 border border-red-700/60 bg-red-950/40 px-4 py-3 rounded-sm text-red-300 text-sm">
+                            <div class="flex items-start gap-2">
+                                <iconify-icon icon="game-icons:broken-shield" class="text-lg mt-0.5"></iconify-icon>
+                                <div>{{ form_errors(registrationForm) }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form_start(registrationForm, {
+                        attr: { novalidate: 'novalidate', class: 'space-y-5' }
+                    }) }}
+
+                    {{ form_row(registrationForm.username, {
+                        label: 'Nom de Chevalier',
+                        attr: { placeholder: 'Aragorn de Gondor', autocomplete: 'username' }
+                    }) }}
+
+                    {{ form_row(registrationForm.email, {
+                        label: 'Adresse du Corbeau',
+                        attr: { placeholder: 'seigneur@calradia.com', autocomplete: 'email' }
+                    }) }}
+
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'Sceau Secret (Mot de passe)',
+                        attr: { placeholder: '••••••••••' }
+                    }) }}
+
+                    <div class="pt-2 border-t border-amber-700/20">
+                        {{ form_row(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <button type="submit"
+                            class="cursor-pointer relative w-full mt-6 overflow-hidden rounded-sm border border-amber-400 bg-linear-to-b from-amber-500 to-amber-700 px-6 py-3 font-serif text-base font-bold uppercase tracking-[0.25em] text-neutral-950 shadow-lg shadow-amber-900/50 transition hover:from-amber-400 hover:to-amber-600 hover:shadow-amber-500/40 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-neutral-950 active:translate-y-0.5">
+                        <span class="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                        <span class="relative flex items-center justify-center gap-2">
+                            <iconify-icon icon="game-icons:sword-brandish" class="text-lg"></iconify-icon>
+                            S'inscrire
+                        </span>
+                    </button>
+
+                    {{ form_end(registrationForm) }}
+
+                    <div class="mt-6 flex items-center gap-3">
+                        <div class="flex-1 h-px bg-linear-to-r from-transparent to-amber-700/40"></div>
+                        <span class="text-xs uppercase tracking-[0.3em] text-amber-600/60">ou</span>
+                        <div class="flex-1 h-px bg-linear-to-l from-transparent to-amber-700/40"></div>
+                    </div>
+
+                    <p class="mt-4 text-center text-sm text-neutral-400">
+                        Déjà un compte ?
+                        <a href="{{ path('app_login') }}" class="text-amber-400 hover:text-amber-300 font-semibold underline-offset-4 hover:underline transition">
+                            Connectez-vous
+                        </a>
+                    </p>
+                </div>
+
+                <div class="border-t border-amber-700/30 bg-linear-to-t from-amber-950/30 to-transparent px-8 py-3">
+                    <div class="flex items-center justify-center gap-2 text-amber-600/50">
+                        <iconify-icon icon="game-icons:laurels" class="text-base"></iconify-icon>
+                        <span class="text-[10px] uppercase tracking-[0.4em]">Calradia — MMXXVI</span>
+                        <iconify-icon icon="game-icons:laurels" class="text-base scale-x-[-1]"></iconify-icon>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+{% endblock %}

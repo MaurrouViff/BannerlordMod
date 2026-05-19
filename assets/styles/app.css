@@ -1,3 +1,6 @@
 @import "tailwindcss";
 @source not "../../public";
 
+body {
+    font-family: Poppings, sans-serif;
+}
